@@ -3,574 +3,546 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Fish Farm: Interactive Architecture Report</title>
+    <title>Smart Fish Farm | ระบบฟาร์มปลาอัจฉริยะ</title>
     
-    <!-- Fonts -->
+    <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- Tailwind Config for Custom Colors/Fonts -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Prompt', 'sans-serif'],
-                    },
-                    colors: {
-                        aqua: {
-                            50: '#f0fdfa',
-                            100: '#ccfbf1',
-                            500: '#14b8a6', // Teal main
-                            600: '#0d9488',
-                            800: '#115e59',
-                            900: '#134e4a',
-                        },
-                        marine: {
-                            800: '#1e293b', // Slate dark
-                            900: '#0f172a',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
-    <!-- Required Chart Container Styling & Animations -->
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth; /* เลื่อนหน้าเว็บแบบนุ่มนวล */
+        }
+
+        /* ---------------- Background Animation ---------------- */
         body {
-            background-color: #f8fafc; /* Light slate background */
+            background: linear-gradient(-45deg, #0f172a, #1e293b, #0c4a6e, #164e63);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Prompt', sans-serif;
+            overflow-x: hidden;
+            padding-top: 80px; /* เว้นที่ให้ Navbar */
         }
-        
-        /* STRICT CHART CONTAINER STYLING AS REQUESTED */
-        .chart-container {
-            position: relative;
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* ---------------- Navigation Bar ---------------- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 400px;
-        }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
-        }
-
-        /* Animations */
-        .fade-in {
-            animation: fadeIn 0.5s ease-in forwards;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #94a3b8; 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #64748b; 
+            height: 80px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
 
-        /* Active Tab Styling */
-        .tab-active {
-            background-color: #f0fdfa;
-            border-left: 4px solid #0d9488;
-            color: #134e4a;
+        .navbar .logo {
+            color: #22d3ee;
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 0 10px rgba(34, 211, 238, 0.4);
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .navbar .nav-links a {
+            color: #f8fafc;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 400;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        .navbar .nav-links a:hover {
+            color: #22d3ee;
+            text-shadow: 0 0 10px rgba(34, 211, 238, 0.6);
+        }
+
+        /* ---------------- Glassmorphism Sections ---------------- */
+        section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 40px 20px;
+        }
+
+        .container {
+            align-items: center;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+            padding: 60px;
+            position: relative;
+            width: 1280px;
+            min-height: 720px;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.05), transparent 60%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ---------------- Typography ---------------- */
+        h1, h2, h3 {
+            color: #f8fafc;
             font-weight: 600;
         }
+
+        p, li, .subtitle {
+            color: #cbd5e1;
+            font-weight: 300;
+        }
+
+        h1 {
+            font-size: 85px;
+            line-height: 1.2;
+            text-shadow: 0 0 30px rgba(6, 182, 212, 0.4);
+            letter-spacing: 2px;
+        }
+
+        .section-title {
+            color: #22d3ee;
+            font-size: 42px;
+            font-weight: 600;
+            margin-bottom: 40px;
+            text-align: left;
+            width: 100%;
+            text-shadow: 0 0 15px rgba(34, 211, 238, 0.4);
+        }
+
+        h3 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: #38bdf8;
+        }
+
+        p, li {
+            font-size: 20px;
+            line-height: 1.7;
+        }
+
+        .subtitle {
+            font-size: 26px;
+            margin: 20px auto;
+            color: #94a3b8;
+            letter-spacing: 1px;
+        }
+
+        .content-area {
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* ---------------- Layouts ---------------- */
+        .title-layout { text-align: center; z-index: 2; }
+        .title-layout h1 span { color: #22d3ee; }
+
+        .two-column {
+            align-items: center;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            width: 100%;
+        }
+
+        .two-column.tiled { align-items: stretch; }
+
+        .two-column.tiled > div, .tile {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 50px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .two-column.tiled > div:hover, .tile:hover {
+            transform: translateY(-5px);
+            border-color: rgba(34, 211, 238, 0.4);
+        }
+
+        .two-column ul { list-style: none; }
+        .two-column li { margin-bottom: 25px; position: relative; padding-left: 35px; }
+        .two-column li::before {
+            content: '▹'; position: absolute; left: 0; color: #22d3ee; font-size: 28px; top: -5px;
+        }
+
+        .tiled-content { display: flex; gap: 40px; justify-content: center; width: 100%; align-items: stretch; }
+        .tile { padding: 40px 30px; flex: 1; justify-content: flex-start; }
+        .tile .icon { color: #22d3ee; font-size: 60px; margin-bottom: 25px; filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.6)); }
+
+        .bullet-list { max-width: 1100px; width: 100%; }
+        .bullet-list ul { list-style: none; }
+        .bullet-list li {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.03), transparent);
+            border-left: 3px solid #22d3ee; border-radius: 0 10px 10px 0;
+            margin-bottom: 25px; padding: 20px 20px 20px 80px; position: relative; font-size: 24px;
+        }
+        .bullet-list i {
+            color: #22d3ee; font-size: 36px; left: 20px; position: absolute;
+            top: 50%; transform: translateY(-50%); filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.5));
+        }
+        .bullet-list li strong { color: #f8fafc; font-weight: 500; }
+
+        .qa-layout {
+            margin: 0 auto; text-align: center; width: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+            backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px; padding: 60px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+        .qa-layout h2 { font-size: 55px; margin-bottom: 35px; color: #22d3ee; text-shadow: 0 0 15px rgba(34, 211, 238, 0.3); }
+        .qa-layout p {
+            font-size: 28px; color: #cbd5e1; max-width: 900px; margin: 0 auto 20px auto;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 20px;
+        }
+        .qa-layout p:last-child { border-bottom: none; }
+
+        .highlight-text { color: #38bdf8; font-weight: 500; }
+
+        /* ---------------- Aquarium Graphics ---------------- */
+        .aquarium-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 20px; overflow: hidden; z-index: 0; pointer-events: none;
+        }
+        .bubble {
+            position: absolute; bottom: -50px; background: rgba(34, 211, 238, 0.1);
+            border: 2px solid rgba(34, 211, 238, 0.4); border-radius: 50%;
+            animation: rise 10s infinite ease-in, sway 3s infinite ease-in-out alternate;
+        }
+        .b1 { left: 15%; width: 25px; height: 25px; animation-duration: 8s, 2.5s; }
+        .b2 { left: 35%; width: 40px; height: 40px; animation-duration: 12s, 3.5s; animation-delay: 2s; }
+        .b3 { left: 55%; width: 20px; height: 20px; animation-duration: 7s, 2s; animation-delay: 1s; }
+        .b4 { left: 75%; width: 30px; height: 30px; animation-duration: 10s, 3s; animation-delay: 4s; }
+        .b5 { left: 85%; width: 50px; height: 50px; animation-duration: 14s, 4s; animation-delay: 0s; }
+        .b6 { left: 25%; width: 15px; height: 15px; animation-duration: 9s, 2.8s; animation-delay: 3s; }
+
+        @keyframes rise {
+            0% { bottom: -50px; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { bottom: 100%; opacity: 0; }
+        }
+        @keyframes sway { 0% { margin-left: -25px; } 100% { margin-left: 25px; } }
+
+        .fish {
+            position: absolute; color: rgba(34, 211, 238, 0.2);
+            filter: drop-shadow(0 0 15px rgba(34, 211, 238, 0.3)); animation: swim linear infinite;
+        }
+        .f1 { font-size: 100px; top: 25%; left: -150px; animation-duration: 25s; }
+        .f2 { font-size: 60px; top: 65%; left: -150px; animation-duration: 18s; animation-delay: 5s; color: rgba(14, 165, 233, 0.2); }
+        .f3 { font-size: 140px; top: 75%; left: -200px; animation-duration: 35s; animation-delay: 12s; opacity: 0.15; }
+
+        @keyframes swim {
+            0% { transform: translateX(-200px) translateY(0px); }
+            25% { transform: translateX(450px) translateY(-30px); }
+            50% { transform: translateX(900px) translateY(20px); }
+            75% { transform: translateX(1350px) translateY(-15px); }
+            100% { transform: translateX(1600px) translateY(0px); }
+        }
+
+        /* ---------------- CSS Graphics (Temp & Phone) ---------------- */
+        .temp-graphic-container { display: flex; justify-content: center; align-items: center; width: 100%; height: 380px; }
+        .temp-ring {
+            width: 280px; height: 280px; border-radius: 50%; border: 10px solid #ef4444;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: rgba(15, 23, 42, 0.8); box-shadow: 0 0 40px rgba(239, 68, 68, 0.5), inset 0 0 30px rgba(239, 68, 68, 0.3);
+            animation: pulse-red 2s infinite; position: relative;
+        }
+        .temp-ring::before {
+            content: ''; position: absolute; width: 320px; height: 320px;
+            border-radius: 50%; border: 2px dashed rgba(239, 68, 68, 0.5); animation: spin 10s linear infinite;
+        }
+        @keyframes pulse-red {
+            0%, 100% { box-shadow: 0 0 40px rgba(239, 68, 68, 0.5), inset 0 0 30px rgba(239, 68, 68, 0.3); }
+            50% { box-shadow: 0 0 70px rgba(239, 68, 68, 0.8), inset 0 0 50px rgba(239, 68, 68, 0.5); }
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .temp-ring i { font-size: 60px; color: #ef4444; margin-bottom: 10px; }
+        .temp-ring .temp-val { font-size: 55px; font-weight: 700; color: #f8fafc; line-height: 1; }
+        .temp-ring .alert-txt { font-size: 20px; color: #ef4444; font-weight: bold; letter-spacing: 2px; margin-top: 5px; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0.3; } }
+
+        .phone-container { display: flex; justify-content: center; align-items: center; width: 100%; height: 440px; }
+        .phone-mockup {
+            width: 250px; height: 500px; border: 12px solid #334155; border-radius: 36px;
+            background: #0f172a; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 30px rgba(34,211,238,0.2);
+            display: flex; flex-direction: column; align-items: center; padding: 30px 15px 15px 15px; transform: translateY(-10px);
+        }
+        .phone-notch { width: 100px; height: 20px; background: #334155; border-radius: 0 0 10px 10px; position: absolute; top: -2px; }
+        .app-header { color: #22d3ee; font-size: 18px; font-weight: 600; margin-bottom: 15px; width: 100%; text-align: center; border-bottom: 1px solid rgba(34,211,238,0.2); padding-bottom: 10px; }
+        .widget-btn {
+            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(34,211,238,0.3);
+            border-radius: 12px; padding: 12px 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .widget-btn.active { background: rgba(34,211,238,0.15); border-color: #22d3ee; }
+        .widget-info { display: flex; align-items: center; gap: 10px; }
+        .widget-info i { color: #22d3ee; font-size: 20px; width: 24px; text-align: center; }
+        .widget-info span { color: #f8fafc; font-size: 14px; }
+        
+        .toggle-switch { width: 36px; height: 20px; background: #475569; border-radius: 10px; position: relative; }
+        .toggle-switch.on { background: #22d3ee; box-shadow: 0 0 10px rgba(34,211,238,0.5); }
+        .toggle-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: #fff; border-radius: 50%; transition: 0.3s; }
+        .toggle-switch.on::after { left: 18px; }
+        .feed-btn { justify-content: center; background: #0c4a6e; border-color: #0284c7; margin-top: auto; margin-bottom: 5px; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4); }
     </style>
 </head>
-<body class="text-marine-800 antialiased overflow-x-hidden">
+<body>
 
-    <!-- Chosen Palette: Aqua (Teal/Cyan) and Marine (Dark Slate) to represent water, technology, and professional stability. Background is Slate-50 for high readability. -->
-    
-    <!-- Application Structure Plan: 
-         1. Hero Section: Clear title and core objective.
-         2. Pain Points Grid: Visually separates the 4 main traditional farming problems for quick scanning.
-         3. Interactive Dashboard (The 6 Core Systems): A split-view layout. Left side acts as navigation (tabs), right side displays detailed content dynamically. This allows users to explore complex architectural details without scrolling through a massive wall of text. It integrates a dynamic Chart.js canvas to simulate the temperature monitoring system.
-         4. Value Proposition: Summary footer highlighting the ultimate benefits.
-         Why this structure?: It breaks down a highly technical and dense report into digestible, interactive chunks, keeping the user engaged while allowing them to focus on one system at a time.
-    -->
-
-    <!-- Visualization & Content Choices: 
-         - Pain Points -> Goal: Inform -> Presentation: Icon Cards -> Justification: Easy to scan.
-         - 6 Core Systems -> Goal: Organize & Explore -> Presentation: Interactive Vertical Tabs + Detail Pane -> Justification: Manages dense text effectively, highlights the inter-connectedness of the systems.
-         - Temperature Data -> Goal: Change & Inform -> Presentation: Chart.js Line Chart -> Interaction: Auto-updating simulation with a red threshold line -> Justification: Directly demonstrates the "Dynamic Graph" and "Red Alert > 30C" feature mentioned in the report. Library: Chart.js (NO SVG/Mermaid).
-    -->
-
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. Using Unicode emojis and CSS styling for visuals. -->
-
-    <!-- Navigation / Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <span class="text-2xl">🐟</span>
-                <h1 class="font-bold text-xl text-aqua-900 tracking-tight">Smart Fish Farm</h1>
-            </div>
-            <nav class="hidden md:flex gap-6 text-sm font-medium text-slate-500">
-                <a href="#overview" class="hover:text-aqua-600 transition-colors">ภาพรวมปัญหา</a>
-                <a href="#architecture" class="hover:text-aqua-600 transition-colors">สถาปัตยกรรมระบบ</a>
-                <a href="#value" class="hover:text-aqua-600 transition-colors">คุณค่าหลัก</a>
-            </nav>
+    <!-- แถบนำทางด้านบน -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-fish-fins"></i> Smart Fish Farm
         </div>
-    </header>
+        <div class="nav-links">
+            <a href="#home">หน้าแรก</a>
+            <a href="#painpoints">ปัญหาเดิม</a>
+            <a href="#architecture">ระบบหลัก</a>
+            <a href="#features">ฟีเจอร์เด่น</a>
+            <a href="#value">คุณค่าที่ได้รับ</a>
+        </div>
+    </nav>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
-
-        <!-- Section 1: Hero & Introduction -->
-        <section id="overview" class="text-center max-w-4xl mx-auto pt-8">
-            <h2 class="text-3xl md:text-5xl font-bold text-marine-900 mb-6 leading-tight">
-                นวัตกรรมเพื่อการยกระดับ <br>
-                <span class="text-aqua-600">ฟาร์มปลาอัจฉริยะ</span>
-            </h2>
-            <p class="text-lg text-slate-600 mb-8 leading-relaxed">
-                การเพาะเลี้ยงปลาด้วยวิธีดั้งเดิมอาศัยประสบการณ์ส่วนบุคคล ซึ่งก่อให้เกิดข้อจำกัดและความเสี่ยงสูง 
-                โครงการ <b>Smart Fish Farm</b> ได้รับการพัฒนาขึ้นเพื่อแก้ไขข้อบกพร่องเชิงระบบด้วยเทคโนโลยี IoT และระบบอัตโนมัติ
-            </p>
-        </section>
-
-        <!-- Section 2: Pain Points (Interactive Cards) -->
-        <section class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100">
-            <div class="mb-8">
-                <h3 class="text-2xl font-bold text-marine-900 mb-2">ข้อจำกัดของระบบดั้งเดิม (Pain Points)</h3>
-                <p class="text-slate-500">ปัญหาหลัก 4 ประการที่นำไปสู่ความสูญเสียทางเศรษฐกิจและชีวภาพ</p>
+    <!-- Section 1: Home / Title -->
+    <section id="home">
+        <div class="container">
+            <!-- Aquarium Graphics Decoration -->
+            <div class="aquarium-container">
+                <div class="bubble b1"></div><div class="bubble b2"></div>
+                <div class="bubble b3"></div><div class="bubble b4"></div>
+                <div class="bubble b5"></div><div class="bubble b6"></div>
+                <i class="fa-solid fa-fish fish f1"></i>
+                <i class="fa-solid fa-fish fish f2"></i>
+                <i class="fa-solid fa-fish-fins fish f3"></i>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Card 1 -->
-                <div class="p-6 rounded-xl bg-slate-50 hover:bg-red-50 hover:shadow-md transition-all duration-300 border border-transparent hover:border-red-100 group">
-                    <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🌡️</div>
-                    <h4 class="font-bold text-marine-800 mb-2">ขาดการเฝ้าระวัง</h4>
-                    <p class="text-sm text-slate-600">ความผันผวนของอุณหภูมิน้ำฉับพลัน ทำให้ปลาช็อกทางอุณหภูมิ (Thermal Shock) โดยผู้เลี้ยงไม่ทราบล่วงหน้า</p>
-                </div>
-                <!-- Card 2 -->
-                <div class="p-6 rounded-xl bg-slate-50 hover:bg-orange-50 hover:shadow-md transition-all duration-300 border border-transparent hover:border-orange-100 group">
-                    <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">⏳</div>
-                    <h4 class="font-bold text-marine-800 mb-2">ข้อจำกัดด้านเวลา</h4>
-                    <p class="text-sm text-slate-600">การขาดความสม่ำเสมอในการให้อาหาร และไม่สามารถควบคุมอุปกรณ์ได้ทันท่วงทีในสภาวะฉุกเฉิน</p>
-                </div>
-                <!-- Card 3 -->
-                <div class="p-6 rounded-xl bg-slate-50 hover:bg-yellow-50 hover:shadow-md transition-all duration-300 border border-transparent hover:border-yellow-100 group">
-                    <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">⚡</div>
-                    <h4 class="font-bold text-marine-800 mb-2">ระบบไฟฟ้าเปราะบาง</h4>
-                    <p class="text-sm text-slate-600">อุปกรณ์ตั้งเวลาแบบเก่ามักสูญเสียข้อมูลเมื่อไฟตกหรือไฟดับ ทำให้วงรอบการให้อาหารคลาดเคลื่อน</p>
-                </div>
-                <!-- Card 4 -->
-                <div class="p-6 rounded-xl bg-slate-50 hover:bg-blue-50 hover:shadow-md transition-all duration-300 border border-transparent hover:border-blue-100 group">
-                    <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">📡</div>
-                    <h4 class="font-bold text-marine-800 mb-2">โครงสร้างซับซ้อน</h4>
-                    <p class="text-sm text-slate-600">อุปกรณ์ IoT ทั่วไปติดตั้งยาก ต้องแก้ Source Code ผ่านคอมพิวเตอร์เมื่อย้ายสถานที่</p>
+            <div class="title-layout">
+                <h1><span>Smart</span> Fish Farm</h1>
+                <p class="subtitle">นวัตกรรมระบบฟาร์มปลาอัจฉริยะ มอนิเตอร์และสั่งการอุปกรณ์ผ่านมือถือด้วยเทคโนโลยี IoT</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Pain Points -->
+    <section id="painpoints">
+        <div class="container">
+            <h2 class="section-title">ข้อจำกัดของการเลี้ยงปลา (Pain Points)</h2>
+            <div class="content-area">
+                <div class="tiled-content">
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-temperature-arrow-up"></i></div>
+                        <h3>ขาดการเฝ้าระวังอุณหภูมิ</h3>
+                        <p>สภาพอากาศทำให้อุณหภูมิน้ำแกว่งฉับพลัน ส่งผลให้ปลาเกิดภาวะช็อกทางอุณหภูมิและเสียชีวิตโดยที่ผู้เลี้ยงไม่ทราบล่วงหน้า</p>
+                    </div>
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                        <h3>ข้อจำกัดด้านเวลา</h3>
+                        <p>ผู้เลี้ยงมักไม่มีเวลาเฝ้าบ่อ 24 ชม. ทำให้อาหารไม่สม่ำเสมอ เกิดอาหารตกค้าง ไม่สามารถรับรู้หรือสั่งเปิดปั๊มอากาศได้ทันเวลา</p>
+                    </div>
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-bolt-lightning"></i></div>
+                        <h3>ระบบเดิมเปราะบาง</h3>
+                        <p>เครื่องให้อาหารและปั๊มน้ำทั่วไปมักลืมการตั้งค่าเมื่อไฟตก ทำให้วงรอบการทำงานรวน และขาดความสามารถในการตรวจสอบระบบฮาร์ดแวร์</p>
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Section 3: Interactive Architecture Dashboard -->
-        <section id="architecture" class="scroll-mt-20">
-            <div class="mb-8">
-                <h3 class="text-2xl font-bold text-marine-900 mb-2">องค์ประกอบทางสถาปัตยกรรม 6 ระบบหลัก</h3>
-                <p class="text-slate-500">คลิกเลือกแต่ละระบบเพื่อศึกษา กลไกการทำงาน วัตถุประสงค์ และข้อได้เปรียบเชิงเปรียบเทียบ</p>
-            </div>
-
-            <div class="flex flex-col lg:flex-row gap-8 bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden min-h-[500px]">
-                
-                <!-- Sidebar / Tabs -->
-                <div class="lg:w-1/3 bg-slate-50 border-r border-slate-200 p-4 space-y-2" id="systemTabs">
-                    <!-- Tabs will be injected here via JS -->
+    <!-- Section 3: Architecture -->
+    <section id="architecture">
+        <div class="container">
+            <h2 class="section-title">สถาปัตยกรรมระบบ Dual Core (ESP32)</h2>
+            <div class="content-area">
+                <div class="two-column tiled">
+                    <div>
+                        <h3>Commander Node</h3>
+                        <p>บอร์ดไมโครคอนโทรลเลอร์ชุดที่ 1 ทำหน้าที่เป็น "สมองกลหลัก" ประมวลผลเซนเซอร์ <span class="highlight-text">ควบคุมเปิด-ปิดปั๊มออกซิเจน ระบบไฟส่องสว่าง</span> จ่ายอาหารปลา และเชื่อมต่อ IoT</p>
+                    </div>
+                    <div>
+                        <h3>Display Node</h3>
+                        <p>บอร์ดไมโครคอนโทรลเลอร์ชุดที่ 2 รับผิดชอบการแสดงผลกราฟิกบนหน้าจอ TFT วาดกราฟและ UI แจ้งเตือน เพื่อไม่ให้ดึงทรัพยากรหน่วงการสั่งงานอุปกรณ์หลัก</p>
+                    </div>
                 </div>
+            </div>
+        </div>
+    </section>
 
-                <!-- Content Display Area -->
-                <div class="lg:w-2/3 p-6 lg:p-10 flex flex-col justify-center relative bg-white" id="systemContent">
-                    <!-- Dynamic Content -->
-                    <div id="contentWrapper" class="fade-in w-full h-full flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center gap-3 mb-4">
-                                <span id="sysIcon" class="text-4xl bg-aqua-50 p-3 rounded-xl">🌡️</span>
-                                <h4 id="sysTitle" class="text-2xl font-bold text-aqua-900">กำลังโหลด...</h4>
+    <!-- Section 4: Feature 1 (Temp) -->
+    <section id="features">
+        <div class="container">
+            <h2 class="section-title">1. ระบบเฝ้าระวังอุณหภูมิอัจฉริยะ</h2>
+            <div class="content-area">
+                <div class="two-column">
+                    <div>
+                        <ul>
+                            <li>ใช้เซนเซอร์ใต้น้ำ DS18B20 วัดอุณหภูมิน้ำ Real-time ด้วยความแม่นยำสูงทนทานต่อสภาพแวดล้อม</li>
+                            <li>แสดงผล <strong>Dynamic Graph</strong> วิเคราะห์แนวโน้มอุณหภูมิย้อนหลัง 40 ค่าล่าสุดบนหน้าจอหน้าบ่อปลา</li>
+                            <li>ระบบ <strong>Visual Alert หน้าตู้</strong>: หากน้ำร้อนเกินเกณฑ์วิกฤต หน้าจอจะเปลี่ยนเป็น <span style="color:#ef4444; font-weight:600; text-shadow:0 0 10px rgba(239,68,68,0.5);">"สีแดง"</span> แจ้งเตือนให้ผู้เลี้ยงรีบเปิดปั๊มออกซิเจนทันที</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="temp-graphic-container">
+                            <div class="temp-ring">
+                                <i class="fa-solid fa-temperature-high"></i>
+                                <div class="temp-val">32.5°</div>
+                                <div class="alert-txt">HIGH TEMP</div>
                             </div>
-                            
-                            <div class="space-y-6">
-                                <div>
-                                    <h5 class="text-sm font-bold tracking-wider text-slate-400 uppercase mb-2">⚙️ กลไกการทำงาน</h5>
-                                    <p id="sysMech" class="text-slate-700 leading-relaxed"></p>
-                                </div>
-                                <div>
-                                    <h5 class="text-sm font-bold tracking-wider text-slate-400 uppercase mb-2">🎯 วัตถุประสงค์</h5>
-                                    <p id="sysPurp" class="text-slate-700 leading-relaxed"></p>
-                                </div>
-                                <div class="bg-aqua-50/50 p-4 rounded-lg border border-aqua-100">
-                                    <h5 class="text-sm font-bold tracking-wider text-aqua-800 uppercase mb-2">✨ ข้อได้เปรียบ</h5>
-                                    <p id="sysAdv" class="text-slate-800 leading-relaxed font-medium"></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Dynamic Visualization Area -->
-                        <div id="vizContainer" class="mt-8 w-full hidden">
-                            <!-- Dedicated Chart Container ensuring responsive layout -->
-                            <div class="chart-container">
-                                <canvas id="systemChart"></canvas>
-                            </div>
-                            <p id="vizCaption" class="text-center text-xs text-slate-500 mt-3"></p>
-                        </div>
-                        
-                        <!-- Alternative Visualization for Diagnostics (Text Based) -->
-                        <div id="diagContainer" class="mt-8 w-full hidden bg-black text-green-400 font-mono p-4 rounded-lg text-sm shadow-inner">
-                            <p>> [SYSTEM] Booting Smart Fish Farm OS...</p>
-                            <p>> [WIFI] Connected. RSSI: -45 dBm 📶</p>
-                            <p>> [NTP] Syncing time... OK (GMT+7)</p>
-                            <p>> [SENSOR_DS18B20] Check... <span class="text-green-500">[ OK ]</span></p>
-                            <p>> [RELAY_1] O2 Pump... <span class="text-green-500">[ OK ]</span></p>
-                            <p class="animate-pulse">> System operational. CPU Temp: 42°C</p>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Section 4: Ultimate Value Proposition -->
-        <section id="value" class="bg-marine-900 rounded-2xl p-10 text-white shadow-xl relative overflow-hidden scroll-mt-20">
-            <!-- Decorative background element -->
-            <div class="absolute top-0 right-0 -mr-20 -mt-20 text-white/5 text-[200px] pointer-events-none">⚓</div>
-            
-            <div class="relative z-10">
-                <div class="text-center max-w-2xl mx-auto mb-12">
-                    <h3 class="text-3xl font-bold mb-4 text-aqua-400">คุณค่าหลักและการประเมินประสิทธิผล</h3>
-                    <p class="text-slate-300">ความคุ้มค่าเชิงกลยุทธ์ 4 ประการ ที่เปลี่ยนการทำฟาร์มแบบดั้งเดิมสู่อุตสาหกรรมยุคใหม่</p>
+    <!-- Section 5: Feature 2 (Feeding) -->
+    <section>
+        <div class="container">
+            <h2 class="section-title">2. ระบบจ่ายอาหารอัตโนมัติแม่นยำสูง</h2>
+            <div class="content-area">
+                <div class="bullet-list">
+                    <ul>
+                        <li><i class="fa-solid fa-cogs"></i> <strong>ปรับการทำงาน 4 โหมดอิสระ:</strong> รองรับการสั่งควบคุมด้วยมือ (Manual) และโหมดปล่อยอาหารอัตโนมัติทุกๆ 6, 12, หรือ 24 ชั่วโมง</li>
+                        <li><i class="fa-solid fa-globe"></i> <strong>เวลาตรงเป๊ะด้วย NTP Time Sync:</strong> ไม่ง้อถ่านนาฬิกา ระบบดึงเวลาสากลผ่านอินเทอร์เน็ต ทำให้วงรอบให้อาหารแม่นยำระดับวินาที</li>
+                        <li><i class="fa-solid fa-fish"></i> <strong>ลดต้นทุนและส่งเสริมการเติบโต:</strong> ช่วยให้ปลาได้รับอาหารอย่างสม่ำเสมอ ลดความสูญเปล่าจากอาหารเหลือทิ้ง และรักษาคุณภาพของน้ำ</li>
+                    </ul>
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="flex gap-4">
-                        <div class="text-3xl">🛡️</div>
-                        <div>
-                            <h4 class="text-lg font-bold text-white mb-1">บรรเทาความเสี่ยง ลดอัตราสูญเสีย</h4>
-                            <p class="text-slate-400 text-sm">ตรวจจับและแจ้งเตือนความผิดปกติของพารามิเตอร์สิ่งแวดล้อมฉับไว ลดอัตราการตายของปลาอย่างมีนัยสำคัญ</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 6: Feature 3 (App) -->
+    <section>
+        <div class="container">
+            <h2 class="section-title">3. สั่งการและมอนิเตอร์ผ่านมือถือ (Blynk App)</h2>
+            <div class="content-area">
+                <div class="two-column">
+                    <div>
+                        <div class="phone-container">
+                            <div class="phone-mockup">
+                                <div class="phone-notch"></div>
+                                <div class="app-header"><i class="fa-solid fa-fish-fins"></i> Smart Farm</div>
+                                <div class="widget-btn">
+                                    <div class="widget-info"><i class="fa-solid fa-temperature-half"></i><span>อุณหภูมิน้ำ</span></div>
+                                    <span style="color:#22d3ee; font-weight:bold; font-size:16px;">28.5 °C</span>
+                                </div>
+                                <div class="widget-btn active">
+                                    <div class="widget-info"><i class="fa-solid fa-wind"></i><span>ปั๊มออกซิเจน</span></div>
+                                    <div class="toggle-switch on"></div>
+                                </div>
+                                <div class="widget-btn">
+                                    <div class="widget-info"><i class="fa-solid fa-lightbulb"></i><span>ไฟส่องสว่าง</span></div>
+                                    <div class="toggle-switch"></div>
+                                </div>
+                                <div class="widget-btn feed-btn">
+                                    <span style="color:#f8fafc; font-weight:600;"><i class="fa-solid fa-utensils"></i> จ่ายอาหารทันที</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="flex gap-4">
-                        <div class="text-3xl">💰</div>
-                        <div>
-                            <h4 class="text-lg font-bold text-white mb-1">ยกระดับประสิทธิภาพต้นทุนและเวลา</h4>
-                            <p class="text-slate-400 text-sm">ควบคุมการให้อาหารแม่นยำ ลดความสูญเปล่าทางทรัพยากร และบรรเทาภาระงานตรวจสอบประจำวัน</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-4">
-                        <div class="text-3xl">⚙️</div>
-                        <div>
-                            <h4 class="text-lg font-bold text-white mb-1">เสถียรภาพระดับอุตสาหกรรม</h4>
-                            <p class="text-slate-400 text-sm">สถาปัตยกรรม Dual ESP32 ประสานกลไกกู้คืนสถานะไฟดับ ปฏิบัติการได้ 24 ชั่วโมงด้วยความน่าเชื่อถือสูง</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-4">
-                        <div class="text-3xl">🌐</div>
-                        <div>
-                            <h4 class="text-lg font-bold text-white mb-1">การบริหารจัดการไร้พรมแดน</h4>
-                            <p class="text-slate-400 text-sm">ประยุกต์ใช้ IoT ผู้ปฏิบัติงานสามารถควบคุมและติดตามสถานะฟาร์มผ่านสมาร์ทโฟน เพิ่มความยืดหยุ่นเชิงพื้นที่</p>
-                        </div>
+                    <div>
+                        <h3>เช็คสถานะและสั่งงานอุปกรณ์ได้ทั่วโลก</h3>
+                        <p>ทลายขีดจำกัดด้วยแอปพลิเคชัน <strong>Blynk</strong> เปิดโทรศัพท์เพื่อ <span class="highlight-text">ตรวจสอบอุณหภูมิ Real-time, สั่งเปิด-ปิดปั๊มออกซิเจน (O2), เปิด-ปิดระบบไฟส่องสว่าง หรือสั่งจ่ายอาหาร</span> ได้จากทุกที่ทั่วโลก ข้อมูลหน้าตู้และแอปจะ <strong>Sync</strong> ตรงกันเสมอ พร้อมหน่วยความจำ <strong>EEPROM</strong> จดจำสถานะล่าสุด หมดห่วงเวลาไฟตก</p>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-    </main>
+    <!-- Section 7: Diagnostics -->
+    <section>
+        <div class="container">
+            <h2 class="section-title">ระบบติดตั้งและวินิจฉัยฮาร์ดแวร์อัจฉริยะ</h2>
+            <div class="content-area">
+                <div class="tiled-content">
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-wifi"></i></div>
+                        <h3>WiFiManager Smart Setup</h3>
+                        <p>ไม่ต้องใช้คอมพิวเตอร์แก้โค้ดเมื่อเปลี่ยนรหัส WiFi หรือย้ายบ่อปลา เครื่องจะสร้างสัญญาณ Hotspot "Smart-Fish-Config" ให้มือถือตั้งค่าเครือข่ายใหม่ได้ทันที ผู้ใช้งานทั่วไปทำได้เองใน 1 นาที</p>
+                    </div>
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-terminal"></i></div>
+                        <h3>System Log & Diagnostics</h3>
+                        <p>หน้าจอเช็คสถานะเชิงลึก ตรวจสอบการเชื่อมต่อเซิร์ฟเวอร์และเซนเซอร์ตลอดเวลา หากสายหลุดจะแจ้งเตือน <span style="color:#ef4444; font-weight:bold;">[ ERR ]</span> ช่วยให้ช่างวิเคราะห์และซ่อมบำรุงได้ตรงจุด</p>
+                    </div>
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-microchip"></i></div>
+                        <h3>Hardware Health Monitor</h3>
+                        <p>ประเมินประสิทธิภาพฮาร์ดแวร์เรียลไทม์ ดึงค่าสัญญาณเน็ต (RSSI) โชว์เพื่อหาจุดตั้งเครื่องที่ดีที่สุด พร้อมวัดอุณหภูมิ CPU ระวังบอร์ดแฮงค์จากการทำงาน 24 ชม.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <footer class="text-center py-8 text-slate-500 text-sm">
-        <p>Generated Interactive Report • Smart Fish Farm Architecture</p>
-    </footer>
+    <!-- Section 8: Value (Footer) -->
+    <section id="value">
+        <div class="container" style="min-height: auto;">
+            <div class="qa-layout">
+                <h2>คุณค่าหลักของนวัตกรรม</h2>
+                <p><strong>บรรเทาความเสี่ยง:</strong> เฝ้าระวังอุณหภูมิตลอด 24 ชม. พร้อมแจ้งเตือนฉับไวที่หน้าจอ ช่วยให้เข้าแก้ไขเปิดปั๊มน้ำได้ทันการณ์</p>
+                <p><strong>ยกระดับประสิทธิภาพ:</strong> ผู้เลี้ยงตรวจสอบและสั่งการอุปกรณ์บ่อปลา (ให้อาหาร, ไฟ, ปั๊มออกซิเจน) ได้สะดวกผ่านสมาร์ทโฟน</p>
+                <p><strong>เสถียรภาพระดับอุตสาหกรรม:</strong> ระบบทำงานแม่นยำ มีฟังก์ชันจดจำสถานะฟื้นฟูตัวเองได้หลังไฟดับ มั่นใจได้ในระยะยาว</p>
+            </div>
+        </div>
+    </section>
 
-    <!-- Application Logic -->
-    <script>
-        // Data Storage: Core Systems from the Source Report
-        const systemData = [
-            {
-                id: 1,
-                title: "ระบบเฝ้าระวังอุณหภูมิน้ำ",
-                shortTitle: "Smart Temperature",
-                icon: "🌡️",
-                mechanism: "ประยุกต์ใช้เซนเซอร์วัดอุณหภูมิใต้น้ำความละเอียดสูง (DS18B20) เพื่อประมวลผลและแสดงผลในรูปแบบกราฟเส้นต่อเนื่อง (อ้างอิงชุดข้อมูล 40 ชุดล่าสุด) บนจอแสดงผล",
-                purpose: "เพื่อป้องกันและลดทอนความเสี่ยงของการเกิดภาวะช็อกในปลา อันเป็นผลสืบเนื่องมาจากความผันผวนของสภาพภูมิอากาศ",
-                advantage: "สนับสนุนการวิเคราะห์แนวโน้มอุณหภูมิล่วงหน้า บูรณาการระบบแจ้งเตือนเชิงสัญลักษณ์ (จอเปลี่ยนเป็นสีแดง) เมื่ออุณหภูมิสูงเกินเกณฑ์วิกฤต (30°C)",
-                visualType: "chart_temp"
-            },
-            {
-                id: 2,
-                title: "ระบบจ่ายอาหารอัตโนมัติ",
-                shortTitle: "Precision Auto-Feeding",
-                icon: "⚙️",
-                mechanism: "ควบคุมกลไกผ่าน Servo Motor รองรับการทำงาน 4 รูปแบบ (มือบังคับ, อัตโนมัติ 6, 12, 24 ชั่วโมง) ซิงโครไนซ์เวลามาตรฐานกับเซิร์ฟเวอร์สากล (NTP Time Sync)",
-                purpose: "เพื่อส่งเสริมอัตราการเจริญเติบโตให้ตามมาตรฐาน และบรรเทาปัญหาคุณภาพน้ำเสื่อมโทรมจากเศษอาหารตกค้าง",
-                advantage: "ลดความคลาดเคลื่อนจาก Human Error จ่ายอาหารแม่นยำระดับวินาที ส่งผลเชิงบวกต่อสุขภาพปลาและการจัดการคุณภาพน้ำ",
-                visualType: "none"
-            },
-            {
-                id: 3,
-                title: "ระบบควบคุมและหน่วยความจำ",
-                shortTitle: "Relay & EEPROM",
-                icon: "💾",
-                mechanism: "บริหารจัดการเครื่องเติมอากาศและแสงสว่าง ควบคู่กับการบันทึกสถานะล่าสุดลงในหน่วยความจำแบบไม่ลบเลือน (EEPROM/Preferences)",
-                purpose: "เพื่อยกระดับเสถียรภาพ และป้องกันการหยุดชะงักของการดำเนินงานจากสภาวะกระแสไฟฟ้าขัดข้อง",
-                advantage: "ศักยภาพในการกู้คืนสถานะการทำงานล่าสุดอัตโนมัติ แตกต่างจากอุปกรณ์ทั่วไปที่ต้องตั้งค่าใหม่หลังไฟดับ ดำเนินกระบวนการต่อได้ทันที",
-                visualType: "none"
-            },
-            {
-                id: 4,
-                title: "ระบบควบคุมระยะไกล IoT",
-                shortTitle: "Remote Control via Blynk",
-                icon: "📱",
-                mechanism: "รองรับการควบคุมผ่าน 2 ช่องทางคู่ขนาน: การควบคุมเชิงกายภาพหน้าตู้ และทางไกลผ่านแอปพลิเคชัน (Blynk) ข้อมูลปรับปรุงตรงกันแบบเรียลไทม์",
-                purpose: "เพื่อก้าวข้ามข้อจำกัดทางภูมิศาสตร์ และเพิ่มความยืดหยุ่นในกระบวนการบริหารจัดการฟาร์ม",
-                advantage: "ขจัดความจำเป็นในการปฏิบัติงานหน้าตู้เพียงอย่างเดียว อำนวยความสะดวกในการบริหารและตรวจสอบพารามิเตอร์น้ำผ่านอินเทอร์เน็ตได้จากทุกที่",
-                visualType: "none"
-            },
-            {
-                id: 5,
-                title: "การจัดการเครือข่ายอัตโนมัติ",
-                shortTitle: "WiFiManager Smart Setup",
-                icon: "📡",
-                mechanism: "หากเชื่อมต่อ WiFi หลักไม่ได้ อุปกรณ์จะจำลองตนเองเป็น Access Point (Smart-Fish-Config) เปิดโอกาสให้กำหนดค่าเครือข่ายใหม่ผ่าน Pop-up",
-                purpose: "เพื่ออำนวยความสะดวกในกระบวนการติดตั้งและย้ายสถานที่ โดยลดความจำเป็นในการพึ่งพาทักษะทางวิศวกรรมซอฟต์แวร์",
-                advantage: "ลดความซับซ้อนในการแก้ Source Code ผ่านคอมพิวเตอร์ ผู้ใช้สามารถตั้งค่าเครือข่ายใหม่ผ่านมือถือได้อย่างรวดเร็วอิสระ",
-                visualType: "none"
-            },
-            {
-                id: 6,
-                title: "ระบบวินิจฉัยสถานะและ Log",
-                shortTitle: "System Diagnostics",
-                icon: "🩺",
-                mechanism: "แสดงผลส่วนที่สองสำหรับวิเคราะห์ฮาร์ดแวร์อัตโนมัติ เช่น ตรวจสอบเซนเซอร์หลุด ประเมินสัญญาณ (RSSI) และอุณหภูมิ CPU",
-                purpose: "เพื่อสนับสนุนกระบวนการซ่อมบำรุงเชิงป้องกัน (Preventive Maintenance) และลดระยะเวลาสืบค้นสาเหตุ (Downtime)",
-                advantage: "ระบุสาเหตุปัญหาได้อย่างจำเพาะเจาะจง (เช่น โชว์ ERR เมื่อเซนเซอร์ขัดข้อง) แก้ปัญหาตรงจุด ไม่คลุมเครือเหมือนระบบเดิม",
-                visualType: "terminal"
-            }
-        ];
-
-        // State Management
-        let currentActiveId = 1;
-        let activeChartInstance = null;
-        let simInterval = null;
-
-        // DOM Elements
-        const tabsContainer = document.getElementById('systemTabs');
-        const contentWrapper = document.getElementById('contentWrapper');
-        
-        const elIcon = document.getElementById('sysIcon');
-        const elTitle = document.getElementById('sysTitle');
-        const elMech = document.getElementById('sysMech');
-        const elPurp = document.getElementById('sysPurp');
-        const elAdv = document.getElementById('sysAdv');
-        
-        const vizContainer = document.getElementById('vizContainer');
-        const diagContainer = document.getElementById('diagContainer');
-        const vizCaption = document.getElementById('vizCaption');
-        const ctx = document.getElementById('systemChart').getContext('2d');
-
-        // Initialize App
-        function initApp() {
-            renderTabs();
-            updateContent(1); // Load first system
-        }
-
-        // Render Sidebar Navigation Tabs
-        function renderTabs() {
-            tabsContainer.innerHTML = '';
-            systemData.forEach(sys => {
-                const btn = document.createElement('button');
-                btn.className = `w-full text-left px-4 py-3 rounded-lg transition-colors flex items-center gap-3 border-l-4 border-transparent hover:bg-slate-100 ${sys.id === currentActiveId ? 'tab-active' : 'text-slate-600'}`;
-                btn.onclick = () => selectSystem(sys.id);
-                btn.innerHTML = `<span class="text-xl">${sys.icon}</span> <span>${sys.shortTitle}</span>`;
-                tabsContainer.appendChild(btn);
-            });
-        }
-
-        // Handle Tab Selection
-        function selectSystem(id) {
-            if (id === currentActiveId) return;
-            currentActiveId = id;
-            
-            // Re-render tabs to update active state
-            renderTabs();
-            
-            // Add fade animation
-            contentWrapper.classList.remove('fade-in');
-            void contentWrapper.offsetWidth; // Trigger reflow
-            contentWrapper.classList.add('fade-in');
-            
-            updateContent(id);
-        }
-
-        // Update Detailed Content Panel
-        function updateContent(id) {
-            const data = systemData.find(s => s.id === id);
-            if(!data) return;
-
-            elIcon.textContent = data.icon;
-            elTitle.textContent = data.title;
-            elMech.textContent = data.mechanism;
-            elPurp.textContent = data.purpose;
-            elAdv.textContent = data.advantage;
-
-            // Manage Visualizations
-            manageVisuals(data.visualType);
-        }
-
-        // Handle Different Visualizations based on System selected
-        function manageVisuals(vType) {
-            // Clean up previous states
-            vizContainer.classList.add('hidden');
-            diagContainer.classList.add('hidden');
-            if(activeChartInstance) {
-                activeChartInstance.destroy();
-            }
-            if(simInterval) {
-                clearInterval(simInterval);
-            }
-
-            if(vType === 'chart_temp') {
-                vizContainer.classList.remove('hidden');
-                vizCaption.textContent = "Simulation: กราฟแสดงแนวโน้มอุณหภูมิ Real-time พร้อมเส้นเตือนวิกฤตที่ 30°C";
-                renderTempChart();
-            } else if (vType === 'terminal') {
-                diagContainer.classList.remove('hidden');
-            }
-        }
-
-        // Render Dynamic Chart.js Visualization (No SVG, strictly styled)
-        function renderTempChart() {
-            // Initial mock data (simulating the 40-point history mentioned in report)
-            let labels = Array.from({length: 15}, (_, i) => `T-${15-i}s`);
-            let dataPoints = [27.5, 27.6, 27.8, 28.1, 28.5, 28.8, 29.2, 29.5, 29.8, 30.2, 30.5, 30.1, 29.8, 29.5, 29.4];
-            
-            // Define the constant threshold line array
-            const thresholdArray = new Array(15).fill(30);
-
-            activeChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'อุณหภูมิน้ำ (°C)',
-                            data: dataPoints,
-                            borderColor: '#0d9488', // Teal
-                            backgroundColor: 'rgba(13, 148, 136, 0.1)',
-                            borderWidth: 2,
-                            tension: 0.4,
-                            fill: true,
-                            pointRadius: 3,
-                            pointBackgroundColor: function(context) {
-                                var index = context.dataIndex;
-                                var value = context.dataset.data[index];
-                                return value > 30 ? '#ef4444' : '#0d9488'; // Red if > 30
-                            }
-                        },
-                        {
-                            label: 'เกณฑ์วิกฤต (30°C)',
-                            data: thresholdArray,
-                            borderColor: '#ef4444', // Red
-                            borderWidth: 2,
-                            borderDash: [5, 5],
-                            pointRadius: 0,
-                            fill: false
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false, // Critical for custom container sizing
-                    plugins: {
-                        legend: { position: 'top', labels: { font: { family: 'Prompt' } } },
-                        tooltip: { 
-                            titleFont: { family: 'Prompt' }, 
-                            bodyFont: { family: 'Prompt' },
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) { label += ': '; }
-                                    if (context.parsed.y !== null) { label += context.parsed.y + ' °C'; }
-                                    // Alert flag in tooltip
-                                    if(context.datasetIndex === 0 && context.parsed.y > 30) {
-                                        label += ' ⚠️ (วิกฤต)';
-                                    }
-                                    return label;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            min: 26,
-                            max: 32,
-                            title: { display: true, text: 'อุณหภูมิ (°C)', font: { family: 'Prompt' } }
-                        },
-                        x: {
-                            ticks: { font: { family: 'Prompt' } }
-                        }
-                    },
-                    animation: {
-                        duration: 400 // Smooth dynamic updates
-                    }
-                }
-            });
-
-            // Simulate live data update every 2 seconds to demonstrate the "Real-time" feature
-            let timeTick = 0;
-            let currentTemp = 29.4;
-            
-            simInterval = setInterval(() => {
-                if(!activeChartInstance) return;
-                
-                // Random walk for temperature simulation
-                currentTemp += (Math.random() - 0.5) * 0.8; 
-                // Keep it somewhat bound
-                if(currentTemp > 31.5) currentTemp -= 0.5;
-                if(currentTemp < 27) currentTemp += 0.5;
-
-                // Update data arrays
-                dataPoints.shift();
-                dataPoints.push(parseFloat(currentTemp.toFixed(1)));
-                
-                labels.shift();
-                labels.push(`Now+${timeTick}s`);
-                timeTick += 2;
-
-                // Dynamic background change simulation (as mentioned in report)
-                const isAlert = currentTemp > 30;
-                const wrapper = document.getElementById('contentWrapper');
-                if(isAlert) {
-                    wrapper.classList.add('bg-red-50');
-                    activeChartInstance.data.datasets[0].borderColor = '#ef4444';
-                    activeChartInstance.data.datasets[0].backgroundColor = 'rgba(239, 68, 68, 0.1)';
-                } else {
-                    wrapper.classList.remove('bg-red-50');
-                    activeChartInstance.data.datasets[0].borderColor = '#0d9488';
-                    activeChartInstance.data.datasets[0].backgroundColor = 'rgba(13, 148, 136, 0.1)';
-                }
-
-                activeChartInstance.update();
-            }, 2000);
-        }
-
-        // Start execution
-        document.addEventListener('DOMContentLoaded', initApp);
-
-    </script>
 </body>
-
 </html>
